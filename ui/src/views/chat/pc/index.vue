@@ -110,6 +110,7 @@ import { marked } from 'marked'
 import { saveAs } from 'file-saver'
 import applicationApi from '@/api/application'
 import useStore from '@/stores'
+import fetchExternalData from '@/api/customize'
 
 import useResize from '@/layout/hooks/useResize'
 useResize()
@@ -310,9 +311,32 @@ async function exportHTML(): Promise<void> {
   saveAs(blob, suggestedName)
 }
 
+function getAuthCode() {
+  if(route.query?.code){
+    let userSsoCode = route.query.code;
+    fetchExternalData.checkUserToken(userSsoCode as string).then((r1)=>{
+      if(r1?.value?.data?.suc == true){
+        let userNameValue = r1?.value?.data?.userName
+        sessionStorage.setItem('userName',userNameValue)
+        // userName.value = userNameValue
+        console.log("认证成功，欢迎使用。写入用户"+r1?.value?.data?.userName)
+      }else{
+        console.log("认证无效或非法，请重新从单点登录地址登录。1")
+        console.log(r1?.value?.data?.msg)
+        // window.location.href = "https://sso.gszq.com/applogin/forward/38760465168931663"
+      }
+    })
+  }else{
+    console.log("认证无效或非法，请重新从单点登录地址登录。2")
+    // window.location.href = "https://sso.gszq.com/applogin/forward/38760465168931663"
+  }
+    
+}
+
 onMounted(() => {
   user.changeUserType(2)
   getAccessToken(accessToken)
+  getAuthCode()
 })
 </script>
 <style lang="scss">

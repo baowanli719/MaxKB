@@ -17,6 +17,13 @@
         @click="openParagraph(data, dataset.id)"
         >{{ dataset.name }}</el-button
       >
+      <el-button
+        key="index—search"
+        size="small"
+        class="source_search-button"
+        @Click="openSearch(data?.problem_text)"
+        >去OA搜索</el-button
+      >
     </el-space>
   </div>
 
@@ -45,7 +52,7 @@ import { ref } from 'vue'
 import ParagraphSourceDialog from './ParagraphSourceDialog.vue'
 import ExecutionDetailDialog from './ExecutionDetailDialog.vue'
 import { isWorkFlow } from '@/utils/application'
-
+import oaSearch from '@/api/customize'
 const props = defineProps({
   data: {
     type: Object,
@@ -65,9 +72,24 @@ function openParagraph(row: any, id?: string) {
 function openExecutionDetail(row: any) {
   ExecutionDetailDialogRef.value.open(row)
 }
+
+function openSearch(code: string) {
+  // console.log(props.data)
+  window.open("https://oanew.gszq.com/sys/ftsearch/searchBuilder.do?method=search#&newLUI=true&searchAll=true&pageno=1&category=com.landray.kmss.km.institution.model.KmInstitutionKnowledge%2C&queryString="+code)
+}
+
 </script>
 <style lang="scss" scoped>
 .source_dataset-button {
+  background: var(--app-text-color-light-1);
+  border: 1px solid #ffffff;
+  &:hover {
+    border: 1px solid var(--el-color-primary);
+    background: var(--el-color-primary-light-9);
+    color: var(--el-text-color-primary);
+  }
+}
+.source_search-button {
   background: var(--app-text-color-light-1);
   border: 1px solid #ffffff;
   &:hover {
